@@ -5,7 +5,7 @@ Status: M0 planning baseline. These tests have not been executed.
 ## Baseline acceptance (before custom code)
 
 - Two separate Materialious Full accounts can register and sign in.
-- User A history, saved playback progress, channel subscriptions, playlists and settings do not appear under user B.
+- User A history, saved playback progress, channel subscriptions and settings do not appear under user B. Inventory personal-playlist behaviour separately: the built-in YouTube backend currently has no native personal-playlist CRUD, so that requirement must **not** be marked as passing without an actual supported implementation.
 - Changes persist across browser restarts and another device.
 - Password reset and quick connect behavior are characterized.
 - Registration disabled mode and any proxy authentication requirements are exercised.
@@ -69,3 +69,17 @@ M3: Controlled staging environment and limited opt in real provider validation a
 ## Tool use policy
 
 Use GitHub for upstream research and code documentation. Use local development tooling or isolated test containers only after checking host capacity and obtaining approval for deployment affecting existing infrastructure. Conserve remote desktop tool calls.
+
+
+## M0 source review follow-up tests
+
+The evidence and integration proposal are in [M0-SOURCE-REVIEW.md](./M0-SOURCE-REVIEW.md).
+
+- Model an OIDC-only account without requiring a usable local password. Prove existing local accounts still authenticate unchanged after any migration.
+- Confirm authentication can succeed while the master key remains locked, and that protected data cannot decrypt until a correct passphrase is supplied.
+- Verify revocable local OIDC sessions are not the existing indefinitely verifiable signed user-ID bearer tokens. Exercise sign-out, expiry, IdP outage, session rotation and account switch.
+- Test all user-content endpoints against cross-user identifiers, particularly subscription writes/deletes and global primary keys; classify any baseline defects separately from OIDC regressions.
+- Verify OIDC user display names, email claims and rename events cannot grant local administrative privileges.
+- Demonstrate where the browser, desktop and Android clients persist tokens and raw master keys, and test an explicit clearing policy after logout or switching accounts.
+- Verify Quick Connect device pairing cannot bypass the intended OIDC session lifecycle or key-unlock policy.
+- Treat native personal playlists as an outstanding product requirement unless independently implemented and tested; OIDC login alone cannot satisfy this requirement.
