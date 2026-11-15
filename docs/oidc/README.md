@@ -8,6 +8,16 @@ Introduce optional standards based OpenID Connect login to the full backend edit
 
 This document is planning material for an independent community maintained fork, not an upstream feature commitment.
 
+## M0 source review checkpoint, 2026-11-15
+
+A source-level review of the fork at `cf16807d5bf5572d90b3bef4415f65d4362baaf2` is recorded in [M0-SOURCE-REVIEW.md](./M0-SOURCE-REVIEW.md).
+
+- Preliminary assessment: provider-neutral OIDC on Materialious Full web appears viable **with separate client-side data unlock**. It is not implemented, tested or approved for release.
+- The existing `User` model has required local-password fields; an explicit OIDC-only account state and tested migration will be necessary.
+- Existing auth credentials and the raw master key are persisted in client state. OIDC session revocation, browser account switching and remembered keys need their own design.
+- The built-in Materialious account backend does **not** currently implement native personal-playlist storage in YouTube mode. Personal-playlist calls rely on Invidious. This is a separate acceptance gap for the family use case.
+- Keep the draft PR open and the project at M0 until the documented design decisions and test prerequisites are addressed.
+
 ## Scope and invariants
 
 - Preserve the upstream user and encryption model until a tested design explicitly supersedes it.
