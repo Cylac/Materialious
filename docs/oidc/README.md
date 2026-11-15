@@ -18,6 +18,13 @@ A source-level review of the fork at `cf16807d5bf5572d90b3bef4415f65d4362baaf2` 
 - The built-in Materialious account backend does **not** currently implement native personal-playlist storage in YouTube mode. Personal-playlist calls rely on Invidious. This is a separate acceptance gap for the family use case.
 - Keep the draft PR open and the project at M0 until the documented design decisions and test prerequisites are addressed.
 
+## M0 design decisions checkpoint, 2026-11-15
+
+- [M0 design contract](./M0-DESIGN-CONTRACT.md) proposes a two-stage OIDC enrollment, separate client-side unlock and recovery, revocable application sessions, and explicit signed-out/locked/unlocked client states.
+- [OIDC threat model](./THREAT-MODEL.md) catalogues identity substitution, session and CSRF risks, account migration, persisted key material, and cross-user API access concerns.
+- These are **proposed designs**, not implemented behaviour. M0 stays open while the choices and acceptance gates are evaluated.
+- Preferred next activity after M0 sign-off is the isolated **unmodified** Materialious Full M1 baseline, not immediate production deployment or Authentik integration on ORION.
+
 ## Scope and invariants
 
 - Preserve the upstream user and encryption model until a tested design explicitly supersedes it.
