@@ -81,3 +81,19 @@ M0 recommends validating Option A first, preserving existing client encryption. 
 - Bind test ports to localhost or a deliberately isolated interface.
 - No production Authentik provider, DNS, Cloudflare resources, tunnelling, current container or account modifications in M0.
 - Keep deployment secrets and site specific network diagrams in a private operational repo rather than this public fork.
+
+
+## M0 source review checkpoint
+
+See [M0-SOURCE-REVIEW.md](./M0-SOURCE-REVIEW.md) for file-by-file source references, a proposed web-first OIDC flow, the current-client key persistence risk, session and account-schema requirements, and the prototype acceptance gates.
+
+Important refinements to this initial architecture hypothesis:
+
+- Introduce three distinct client states: unauthenticated, authenticated but locked, and authenticated and unlocked. The current UI routes and account-active helpers treat possession of a raw master key as the login signal.
+- The existing database currently requires `passwordHash` and `passwordSalt` for every user. A safe OIDC-only account type needs a migration and a local-login guard. Avoid dummy passwords and implicit email linking.
+- The existing signed user-ID bearer token has no embedded expiration or independent revocation. OIDC sessions should use separately managed, revocable server-side state.
+- The client currently persists the raw decrypted master key. Consider a deliberate remember-device policy rather than assuming that an unlock passphrase is required on every return visit.
+- The Materialious YouTube backend does not currently provide native, user-owned personal-playlist CRUD. This is a separate family-release capability gap, not an OIDC protocol requirement.
+- Review tenant-scoping on all user-content API operations and assess existing admin-by-username checks before enabling automated provisioning.
+
+These are design and test requirements, **not** claims that an OIDC implementation exists.
