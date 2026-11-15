@@ -138,3 +138,9 @@ No code, GitHub default-branch merge, infrastructure, DNS, Cloudflare, productio
 - RFC 10017, OAuth 2.0 for Browser-Based Applications: https://www.rfc-editor.org/rfc/rfc10017
 - RFC 7636, PKCE: https://www.rfc-editor.org/rfc/rfc7636
 - RFC 8252, OAuth 2.0 for Native Apps (when native clients enter scope): https://www.rfc-editor.org/rfc/rfc8252
+
+## Follow-up design artifacts
+
+The [M0 design contract](./M0-DESIGN-CONTRACT.md) refines this preliminary source review with an explicit two-stage provisioning approach, revocable sessions, exact issuer/subject mapping and an offline recovery proposal. The [threat model](./THREAT-MODEL.md) enumerates concrete security and cross-user acceptance tests. Both are proposed and pending validation.
+
+The source-level observations in this document remain tied to the commit reviewed above; implementation work must re-check current upstream and fork code.
