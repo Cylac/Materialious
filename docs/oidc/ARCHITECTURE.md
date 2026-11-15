@@ -97,3 +97,11 @@ Important refinements to this initial architecture hypothesis:
 - Review tenant-scoping on all user-content API operations and assess existing admin-by-username checks before enabling automated provisioning.
 
 These are design and test requirements, **not** claims that an OIDC implementation exists.
+
+## Detailed M0 design contract
+
+The [M0 design contract](./M0-DESIGN-CONTRACT.md) records proposed architecture decisions for two-stage OIDC onboarding, per-user immutable issuer/subject mapping, revocable server-managed **application sessions**, independent client-side unlock, offline recovery, explicit client lock states and future native compatibility. The [threat model](./THREAT-MODEL.md) records the risks and acceptance tests. Neither document authorizes implementation or infrastructure changes.
+
+Clarifications: issuer and subject strings must be matched **exactly**, with no inappropriate case-folding; an IdP suspension alone does not necessarily revoke an existing application session immediately; and browser-cookie authentication introduces its own CSRF obligations. Existing local login remains available by design.
+
+M0 remains open until the design is reviewed and the acceptance gates are fulfilled.
