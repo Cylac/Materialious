@@ -83,3 +83,19 @@ The evidence and integration proposal are in [M0-SOURCE-REVIEW.md](./M0-SOURCE-R
 - Demonstrate where the browser, desktop and Android clients persist tokens and raw master keys, and test an explicit clearing policy after logout or switching accounts.
 - Verify Quick Connect device pairing cannot bypass the intended OIDC session lifecycle or key-unlock policy.
 - Treat native personal playlists as an outstanding product requirement unless independently implemented and tested; OIDC login alone cannot satisfy this requirement.
+
+## Detailed M0 security and lifecycle acceptance cases
+
+See the [M0 design contract](./M0-DESIGN-CONTRACT.md) and [threat model](./THREAT-MODEL.md).
+
+- Two-stage enrollment must not create a usable account from a verified OIDC identity until the encrypted master-key envelope and identity link commit atomically. Retried and concurrent enrollment must be idempotent.
+- Previously existing local accounts retain working login and encrypted data after an OIDC-only schema migration. OIDC-only accounts cannot use legacy password authentication.
+- Reject simultaneous conflicting legacy and OIDC identities, including a stale signed legacy cookie alongside a different OIDC cookie.
+- Session revocation, idle and absolute expiry, user disable and provider outage must behave exactly as documented. IdP suspension is not automatically an immediate revocation guarantee.
+- Cookie-authenticated mutations require deliberate CSRF defences; test malicious cross-site POST/DELETE requests and origin mismatches.
+- No protected data is decrypted in an authenticated-but-locked OIDC session; wrong unlock passphrase and lost recovery secret have clearly documented results.
+- An authenticated but locked browser must not read user A's cached or persisted private data after user B signs in.
+- Check every user-content query for user ID scoping, especially subscription GET/DELETE and globally unique identifiers, and classify baseline findings separately from integration regressions.
+- Confirm provider-supplied email, username and group values cannot grant another user's account or administrative privileges.
+- Demonstrate recovery on disposable encrypted content and backup copies before any family pilot.
+- Verify upstream compatibility with a pinned release and executable local/regression tests; do not count these M0 design entries as tests already passed.
