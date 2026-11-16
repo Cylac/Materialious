@@ -105,3 +105,9 @@ The [M0 design contract](./M0-DESIGN-CONTRACT.md) records proposed architecture 
 Clarifications: issuer and subject strings must be matched **exactly**, with no inappropriate case-folding; an IdP suspension alone does not necessarily revoke an existing application session immediately; and browser-cookie authentication introduces its own CSRF obligations. Existing local login remains available by design.
 
 M0 remains open until the design is reviewed and the acceptance gates are fulfilled.
+
+## Security and migration review
+
+The [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md) records a concrete nullable-credential migration path, session and CSRF test contract, existing logout cookie path mismatch, and the fact that a database-stored client login hash is reusable as server authentication proof if disclosed. It also records subscription ownership tests and a proposed data-deletion audit.
+
+Do not treat these source-level observations as tested exploits. Verify on disposable, **unmodified** Materialious Full during M1, then decide whether isolated security hardening is needed before OIDC prototyping.
