@@ -46,6 +46,17 @@ Related: [source review](./M0-SOURCE-REVIEW.md), [proposed design contract](./M0
 | T16 | Partial enrollment and concurrent subject creation | User model requires key envelope and identity link is separate | Short-lived pending context, transactional provision, exact unique index and retry/idempotency tests | High |
 | T17 | Cross-account cached playback and settings | Global client stores and Dexie tables are not intrinsically scoped to the currently authenticated user | Invalidate and scope in-flight requests/cache after account switch, logout and unlock failure | High |
 
+### Additional baseline findings verified during schema and session review
+
+| ID | Threat | Current observation / concern | Required mitigation and test | Priority |
+| --- | --- | --- | --- | --- |
+| T18 | Cookie not reliably deleted at logout | Legacy `userid` is issued with `Path=/api`, but logout deletes with `Path=/` | Verify cookie persists on isolated browser, correct with matching path in scoped change, regression test | High |
+| T19 | Disclosed login hash usable for authentication | Server compares stored client-derived `passwordHash` directly to supplied login proof | Treat DB hash as a password-equivalent secret, test with disposable credentials; preserve separate data-unlock semantics | High |
+| T20 | Orphaned data when deleting user | Existing `User.delete()` only calls UserTable.destroy | Verify cascade behaviour and data retention, including new identity/session/recovery records | High |
+| T21 | CSRF on JSON cookie-authenticated endpoints | SvelteKit built-in origin check targets form submissions; OIDC will add cookie-authenticated JSON endpoints | Add explicit CSRF contract and adversarial test for unsafe API methods and missing/untrusted Origin | High |
+
+Source-level observations, not proof of exploitable issues. Detailed migration and acceptance cases: [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md).
+
 ## Security acceptance gates
 
 Before M1: Finish written account, key recovery, session and threat decisions; verify no production assets are used.
