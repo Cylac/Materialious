@@ -107,6 +107,7 @@ Detailed steps and source references: [M0 security and migration review](./M0-SE
 - Inspect browser cookie attributes after local login and after local logout. The source currently writes `userid` with `Path=/api` but deletes with `Path=/`; test that a cookie-authenticated API request is denied after logout when no bearer Authorization header is sent.
 - Verify the existing user password hash is treated as a **reusable authentication credential** in security assumptions, with a test using disposable accounts only.
 - Test `amSubscribed`, subscription deletion and subscription creation across two user identities, including known/unknown subscription IDs and global primary-key collisions.
+- Test that subscription reads resolve the same `UserId` association as writes in SQLite, PostgreSQL and MySQL/MariaDB; a source query uses lowercase `userId` while writes use uppercase `UserId`.
 - Test deleting a user and checking for orphaned encrypted records or reused identifiers.
 - Check all mutating JSON endpoints against cross-site, missing-origin and cookie-only requests; do not assume built-in form CSRF protection covers every API endpoint.
 - Check per-user cache separation in localStorage, IndexedDB, Svelte stores, concurrent fetch results and post-logout state.
