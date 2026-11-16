@@ -25,6 +25,16 @@ A source-level review of the fork at `cf16807d5bf5572d90b3bef4415f65d4362baaf2` 
 - These are **proposed designs**, not implemented behaviour. M0 stays open while the choices and acceptance gates are evaluated.
 - Preferred next activity after M0 sign-off is the isolated **unmodified** Materialious Full M1 baseline, not immediate production deployment or Authentik integration on ORION.
 
+## M0 security and migration review checkpoint, 2026-11-15
+
+The [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md) documents the remaining architecture constraints, additive database migration plan, candidate session settings and source-level baseline security concerns.
+
+- Logout sets and deletes the legacy user cookie under different paths, requiring a disposable browser test before relying on logout semantics.
+- Stored local password hashes are reusable authentication proofs if disclosed. This must not be confused with the separate content encryption passphrase.
+- Subscription ownership, cross-user caching, account deletion and cookie-authenticated CSRF require explicit tests.
+- SQLite column migration may rebuild the Users table. Migration and restore must be validated per supported database dialect.
+- Recommended next milestone **after M0 signoff** remains the isolated, **unmodified** M1 baseline. No implementation or infrastructure changes were made during review.
+
 ## Scope and invariants
 
 - Preserve the upstream user and encryption model until a tested design explicitly supersedes it.
