@@ -31,6 +31,8 @@ This is a **design-only** assessment. No live requests, dependency installs, dat
 | S09 | \`src/routes/api/user/history/+server.ts\` | History updates and reads generally use \`UserId\`; collection DELETE lacks an explicit \`locals.userId\` guard | Verify unauthorized DELETE fails predictably; avoid assuming an undefined identity is safe in every Sequelize query. |
 | S10 | \`src/lib/api/backend/quickconnect.ts\` | Encrypted pairing payload includes legacy bearer token and raw master key | Keep Quick Connect disabled for OIDC-only accounts until device enrollment and session revocation are designed and tested. |
 
+| S11 | `src/lib/server/user.ts`; `src/lib/server/database.ts` | Subscription reads use `where: { userId: this.data.id }` while creation, RSS updates and associations use `UserId` | Confirm the actual database column name and query behaviour in SQLite, PostgreSQL and MySQL/MariaDB. Identifier casing may produce a dialect-specific subscription read failure. |
+
 **Why cookie path matters:** HTTP cookie deletion requires the same name, path and domain identity as the original cookie. The mismatch above is an observable source defect and requires an isolated browser regression test, not immediate production intervention.
 
 **Important boundary:** A database credential disclosure may permit server-side login and encrypted record deletion without revealing the encrypted plaintext. These are different attack consequences and must be tested separately.
