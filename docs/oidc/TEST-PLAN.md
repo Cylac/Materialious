@@ -99,3 +99,16 @@ See the [M0 design contract](./M0-DESIGN-CONTRACT.md) and [threat model](./THREA
 - Confirm provider-supplied email, username and group values cannot grant another user's account or administrative privileges.
 - Demonstrate recovery on disposable encrypted content and backup copies before any family pilot.
 - Verify upstream compatibility with a pinned release and executable local/regression tests; do not count these M0 design entries as tests already passed.
+
+## M1 baseline regression cases from final M0 review
+
+Detailed steps and source references: [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md).
+
+- Inspect browser cookie attributes after local login and after local logout. The source currently writes `userid` with `Path=/api` but deletes with `Path=/`; test that a cookie-authenticated API request is denied after logout when no bearer Authorization header is sent.
+- Verify the existing user password hash is treated as a **reusable authentication credential** in security assumptions, with a test using disposable accounts only.
+- Test `amSubscribed`, subscription deletion and subscription creation across two user identities, including known/unknown subscription IDs and global primary-key collisions.
+- Test deleting a user and checking for orphaned encrypted records or reused identifiers.
+- Check all mutating JSON endpoints against cross-site, missing-origin and cookie-only requests; do not assume built-in form CSRF protection covers every API endpoint.
+- Check per-user cache separation in localStorage, IndexedDB, Svelte stores, concurrent fetch results and post-logout state.
+- Rehearse OIDC-only nullable password field migration on copied SQLite, PostgreSQL and MySQL/MariaDB baselines as relevant, comparing legacy credential and master-key envelopes exactly, and restore a prior backup after a simulated migration failure.
+- Distinguish **unmodified upstream defects** from OIDC regressions. Document any proposed patches on reviewable feature branches, not on `main`.
