@@ -55,6 +55,8 @@ Related: [source review](./M0-SOURCE-REVIEW.md), [proposed design contract](./M0
 | T20 | Orphaned data when deleting user | Existing `User.delete()` only calls UserTable.destroy | Verify cascade behaviour and data retention, including new identity/session/recovery records | High |
 | T21 | CSRF on JSON cookie-authenticated endpoints | SvelteKit built-in origin check targets form submissions; OIDC will add cookie-authenticated JSON endpoints | Add explicit CSRF contract and adversarial test for unsafe API methods and missing/untrusted Origin | High |
 
+| T22 | Subscription FK case mismatch | Subscription reads use `userId` while association and writes use `UserId`; Sequelize SQL identifier handling varies by dialect | Verify exact schema, generated query and cross-device subscription reads for all supported database engines | Medium |
+
 Source-level observations, not proof of exploitable issues. Detailed migration and acceptance cases: [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md).
 
 ## Security acceptance gates
