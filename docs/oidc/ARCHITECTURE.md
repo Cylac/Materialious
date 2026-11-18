@@ -1,8 +1,12 @@
 # Proposed OIDC architecture and security decisions
 
-Status: Hypothesis under review. Do not implement or deploy without completing M0.
+Status: M0 technical design selected for isolated M1 baseline entry on 2026-11-18. **No OIDC implementation, validation, or deployment exists.**
 
 > **Upstream update, November 18, 2026:** Materialious 1.18.33 adds native private playlists, local TOTP two-factor login and new migrations. Earlier playlist-gap observations below describe 1.18.27 only. See [current reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). All OIDC schema and account-linking plans must preserve upstream TOTP and playlist tables.
+
+## Current M0 entry decision
+
+The [M0 decision record](./M0-DECISION-RECORD.md) selects provider-neutral web-first OIDC with separate unlock, atomic OIDC-only account creation, no automatic account linking, and a distinct revocable application session for future M2 testing. M0 research is considered technically sufficient to prepare an [isolated M1 unmodified baseline](./M1-BASELINE-RUNBOOK.md). There is no deployment approval and no test success implied.
 
 ## Existing backend verified in source
 
@@ -106,7 +110,7 @@ The [M0 design contract](./M0-DESIGN-CONTRACT.md) records proposed architecture 
 
 Clarifications: issuer and subject strings must be matched **exactly**, with no inappropriate case-folding; an IdP suspension alone does not necessarily revoke an existing application session immediately; and browser-cookie authentication introduces its own CSRF obligations. Existing local login remains available by design.
 
-M0 remains open until the design is reviewed and the acceptance gates are fulfilled.
+The M0 technical decision is recorded, while M1 runtime acceptance, user isolation, migrations and M2 proof-of-concept validation remain outstanding.
 
 ## Security and migration review
 
