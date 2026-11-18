@@ -97,11 +97,17 @@ No unencrypted or server-escrowed recovery key. A forgotten passphrase **and** l
 - Group claims should support optional **admission policy** only and fail closed if required and missing. They do not directly confer Materialious admin privileges.
 - Existing Materialious admin authorization uses configured usernames; prevent provider-controlled usernames from becoming an indirect route to administrator status. A server-generated compatibility username is not a security role.
 
-## ADR 006: Separate product gap for native personal playlists
+## ADR 006: Preserve upstream native private playlists
 
-Existing Materialious YouTube backend returns no personal playlist collection and its playlist write functions are no-ops in this mode. Therefore OIDC does **not** satisfy the complete intended family experience by itself.
+**Updated 2026-11-18 after reviewing 1.18.33:** Materialious now provides native personal playlists with per-user database ownership, client-encrypted playlist titles/video fields and private-only creation. The former proposed custom-playlist release blocker is **superseded** by upstream functionality.
 
-Decision proposal: do not widen the M2 protocol prototype with playlist implementation. Keep per-user native playlist persistence, privacy, schema, API and encrypted synchronization as an explicit **release blocker** before declaring the family-facing M4 feature set complete, unless a separately approved equivalent is verified.
+Decision proposal: Preserve the upstream implementation, do not fork or duplicate playlist features for OIDC, and include playlist API authorization, encryption/decryption, create/add/remove/delete and two-user cross-device sync in M1. Treat these as **unverified** until an isolated test passes. OIDC account mapping must resolve to the same immutable internal User.id used by playlists, history, subscriptions and settings.
+
+See [1.18.33 reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md).
+
+### Upstream local TOTP is separate from OIDC login
+
+Upstream now implements local-password TOTP. Do not assume local 2FA settings automatically apply to an OIDC-only identity. M2 should use the configured IdP's policy for OIDC. A future explicit linking action for a local account with enabled TOTP must require recent, fully completed local authentication and OIDC authentication, not merely possession of an old session. Account schema migrations must retain TOTP columns.
 
 ## Planned module boundaries and smallest changes
 
