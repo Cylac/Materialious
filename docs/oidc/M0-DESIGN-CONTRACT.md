@@ -1,9 +1,9 @@
 # M0 design contract: account lifecycle, sessions and encryption
 
-Status: **Proposed for review. No implementation or tests run.**
+Status: **M0 prototype design direction selected for M1 entry, 2026-11-18.** No implementation or runtime tests.
 Date: 2026-11-15.
 Evidence: [M0 source review](./M0-SOURCE-REVIEW.md), Materialious Full source at fork baseline fc971b90c1fd61c81c28dfa1a0aee9367697eeab.
-This document records the proposed initial integration contract. It is **not** a declaration that M0 is complete.
+This document records the initial integration contract and design choices. The [M0 decision record](./M0-DECISION-RECORD.md) assesses technical M0 completion for M1 entry; it does **not** authorize implementation or production deployment.
 
 ## Scope and non-goals
 
@@ -135,7 +135,7 @@ The actual module layout, package selection and migration mechanism are deferred
 6. Record acceptance tests for the existing user-scoping issues and decide whether security hardening is required before any OIDC-enabled disposable prototype.
 7. Explicitly confirm the M2 web-only scope, local password compatibility and no automated account linking.
 
-M0 remains **in progress** until decisions and the threat model have been reviewed against these gates.
+The [M0 decision record](./M0-DECISION-RECORD.md) selects prototype defaults and authorizes preparation of the isolated M1 baseline as a technical milestone. The risks above remain **runtime test gates** for M1 and M2, and family-facing policies remain subject to later review.
 
 ## Standards and secure-design references
 
