@@ -8,6 +8,8 @@ Repository: https://github.com/Materialious/Materialious
 
 This document supersedes **only** the earlier current-capability claim that Materialious Full lacks native user playlists. Earlier source review documents remain useful historical observations about 1.18.27 and should be read in that version context. No application code was changed or executed during this review.
 
+> **Decision follow-up, 2026-11-18:** The later [M0 decision record](./M0-DECISION-RECORD.md) concludes the technical architecture gate is sufficient for entering isolated M1 preparation. The conditional M0 status below reflects the earlier research checkpoint.
+
 ## Why this review is necessary
 
 Between the fork's last synced upstream baseline (\`81bab78f728ea6f0ddcc5261bd63036fccbbe1d3\`) and 1.18.33, upstream added 41 commits with changes in authentication, database migrations, personal playlists, TOTP two-factor login, client state and native applications. The Materialious project published stable 1.18.28 through 1.18.33 between November 17 and 18, 2026. These are source-level observations, not release validation.
