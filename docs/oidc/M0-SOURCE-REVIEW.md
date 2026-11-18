@@ -8,6 +8,8 @@ Application version in `materialious/package.json`: `1.18.27`.
 
 This is a read-only source assessment. It does **not** confirm behavior by integration testing, implement OIDC, or approve deployment. Recheck all references against the current GitHub head before beginning implementation.
 
+> **Historical source baseline: Materialious 1.18.27, 2026-11-15.** Current upstream stable **1.18.33** adds native private personal playlists and local TOTP. This document's playlist-gap conclusions are no longer current. See [upstream reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). Other security concerns have been rechecked where stated in that reassessment.
+
 ## 1. What was inspected
 
 | Boundary | Existing implementation | Relevance to OIDC |
@@ -89,9 +91,9 @@ Proposed flow:
 
 Note: the existing signed bearer token is a signed user ID without an expiry in the token itself. `setAuthCookie` limits the *cookie* to 60 days, not an independently revocable bearer credential. The proposed OIDC session must not reuse this token model. Existing password and session semantics should be preserved for local logins during the prototype, with separate hardening work where warranted.
 
-## 6. Product capability gap: personal playlists
+## 6. Historical 1.18.27 product capability gap: personal playlists
 
-The native Materialious full backend has server-side account storage for encrypted watch history, subscriptions and key/value settings. Its current personal-playlist API functions use **Invidious**; `getPersonalPlaylists()` returns an empty list in the YouTube backend path, and write methods are no-ops there. OIDC will **not** by itself supply per-user native personal playlists.
+**Historical as of 1.18.27, superseded by 1.18.33.** At the reviewed baseline, the native Materialious full backend had server-side account storage for encrypted watch history, subscriptions and key/value settings. Its personal-playlist API functions used **Invidious**; `getPersonalPlaylists()` returns an empty list in the YouTube backend path, and write methods are no-ops there. OIDC will **not** by itself supply per-user native personal playlists.
 
 For a family-facing release, we must either implement a separately scoped per-user playlist store and tested APIs, adopt a deliberately supported alternative with clear limitations, or explicitly narrow the feature promise. This is a **product acceptance gap**, not evidence that OIDC is impossible. Keep unrelated playlist implementation outside the M2 protocol prototype until the architectural choice is made.
 
