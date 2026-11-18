@@ -6,7 +6,7 @@ Related: [M0 decision record](./M0-DECISION-RECORD.md), [test plan](./TEST-PLAN.
 
 ## Goal and hard boundaries
 
-Test the **unmodified upstream** Materialious Full release 1.18.33, commit \`982ac6f5c04c989fcae3521a3b619a055946753d\`, with disposable local users and independent persistent test storage.
+Test the **unmodified upstream** Materialious Full release 1.18.33, commit `982ac6f5c04c989fcae3521a3b619a055946753d`, with disposable local users and independent persistent test storage.
 
 This runbook **does not authorize** a host deployment. For any test on ORION, first review running Docker resources, choose a wholly isolated location/network/ports and obtain explicit approval. Do not touch existing containers, proxy, DNS, Authentik, family databases, Cloudflare, production volumes, or the GionetHome tunnel. A separate disposable host or sandbox is preferable.
 
@@ -14,25 +14,25 @@ No external identity provider is needed for M1. The test must prove original Mat
 
 ## Release and artifact pinning
 
-- The upstream Full Docker build workflow is \`.github/workflows/prod-full-web.yml\`: it publishes \`wardpearce/materialious-full:latest\` and \`wardpearce/materialious-full:<package-version>\`.
-- Upstream source \`materialious/package.json\` at the reviewed SHA declares version \`1.18.33\`.
-- Before use, **verify** that \`wardpearce/materialious-full:1.18.33\` exists, is associated with the intended upstream build, and capture an immutable platform-specific digest. Publishing a version tag in workflow does not itself establish availability or provenance.
-- In a disposable test shell, inspect with \`docker buildx imagetools inspect wardpearce/materialious-full:1.18.33\` and record the selected digest. Never assume the digest, and do not deploy \`latest\`.
+- The upstream Full Docker build workflow is `.github/workflows/prod-full-web.yml`: it publishes `wardpearce/materialious-full:latest` and `wardpearce/materialious-full:<package-version>`.
+- Upstream source `materialious/package.json` at the reviewed SHA declares version `1.18.33`.
+- Before use, **verify** that `wardpearce/materialious-full:1.18.33` exists, is associated with the intended upstream build, and capture an immutable platform-specific digest. Publishing a version tag in workflow does not itself establish availability or provenance.
+- In a disposable test shell, inspect with `docker buildx imagetools inspect wardpearce/materialious-full:1.18.33` and record the selected digest. Never assume the digest, and do not deploy `latest`.
 - If no trustworthy published image is available, create a reproducible isolated build from the pinned upstream source. Do not substitute our unfinished OIDC branch.
 
 ## Ready-to-customize isolated Docker Compose example
 
 This is a **future** test template, NOT a command to run on ORION. The image must be set to a verified immutable reference in a local, untracked environment file. The example intentionally does not hardcode any credentials or internal hostname.
 
-\`\`\`yaml
+```yaml
 services:
   materialious-m1:
-    image: \${M1_IMAGE_REFERENCE:?Set verified digest reference}
+    image: ${M1_IMAGE_REFERENCE:?Set verified digest reference}
     restart: "no"
     ports:
       - "127.0.0.1:33033:3000"
     environment:
-      COOKIE_SECRET: \${M1_COOKIE_SECRET:?Set a unique random secret}
+      COOKIE_SECRET: ${M1_COOKIE_SECRET:?Set a unique random secret}
       DATABASE_CONNECTION_URI: "sqlite:///materialious-data/materialious.db"
       PUBLIC_INTERNAL_AUTH: "true"
       PUBLIC_REQUIRE_AUTH: "true"
@@ -47,11 +47,11 @@ services:
 
 volumes:
   materialious_m1_disposable_data:
-\`\`\`
+```
 
-**Safety details:** Port binds to 127.0.0.1 only. No shared production volumes. No production proxy/Cloudflare/DNS and no Authentik provider. Registration and HTTP-only captcha bypass are acceptable **only** inside this private disposable test environment, never as a public configuration. The Compose project name and volume prefixes must be checked for collisions before starting. Store the generated \`M1_COOKIE_SECRET\` and verified image reference in an ignored local \`.env\` or an equivalent private secret provider; never commit it.
+**Safety details:** Port binds to 127.0.0.1 only. No shared production volumes. No production proxy/Cloudflare/DNS and no Authentik provider. Registration and HTTP-only captcha bypass are acceptable **only** inside this private disposable test environment, never as a public configuration. The Compose project name and volume prefixes must be checked for collisions before starting. Store the generated `M1_COOKIE_SECRET` and verified image reference in an ignored local `.env` or an equivalent private secret provider; never commit it.
 
-The upstream Full image and basic SQLite environment syntax are described in \`docs/DOCKER-FULL.md\`. The above has **not** been run or validated yet.
+The upstream Full image and basic SQLite environment syntax are described in `docs/DOCKER-FULL.md`. The above has **not** been run or validated yet.
 
 ## M1 test sequence
 
@@ -75,7 +75,7 @@ The upstream Full image and basic SQLite environment syntax are described in \`d
 
 ### Gate 2. Authentication, encryption and security
 
-- [ ] Verify cookie \`userid\` attributes on login and deletion behaviour on logout, explicitly testing the upstream \`/api\` versus \`/\` path mismatch with no Authorization header.
+- [ ] Verify cookie `userid` attributes on login and deletion behaviour on logout, explicitly testing the upstream `/api` versus `/` path mismatch with no Authorization header.
 - [ ] Verify signed legacy bearer token persistence and inability to revoke independently of cookie logout. Treat bearer tokens as sensitive and use **disposable credentials only**.
 - [ ] Confirm new local TOTP can be set up, verified, required on fresh login and disabled according to documented flows. Verify incorrect/replayed TOTP code rejection.
 - [ ] Confirm no master-key plaintext appears in network payloads or sanitized server logs; inspect browser storage and client caches after logout and account switching.
