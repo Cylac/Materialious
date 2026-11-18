@@ -1,6 +1,6 @@
 # OIDC integration roadmap
 
-Status: Planning and feasibility. No production integration exists.
+Status: **M0 technical architecture gate completed 2026-11-18; M1 isolated unmodified baseline prepared, not deployed.** No OIDC implementation or production integration exists.
 
 ## Goal
 
@@ -14,7 +14,7 @@ This document is planning material for an independent community maintained fork,
 
 The [1.18.33 upstream reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md) **supersedes earlier statements that native personal playlists are missing**: upstream now has encrypted, per-user **private** playlists with server-side ownership checks. Functionality and isolation still need an unmodified M1 baseline test. The upstream release also adds local TOTP two-factor authentication and additional database migration logic, which must be preserved and accounted for by future OIDC provisioning.
 
-Current recommendation: **conditional go for M1 planning, not production deployment or M2 code**. M0 is still open pending formal acceptance of the encryption recovery, account schema, session and cross-user security design.
+**M0 technical decision recorded:** [M0 decision record](./M0-DECISION-RECORD.md) concludes **GO to isolated M1 baseline preparation**, with prototype defaults and explicit M2/M4 security gates. [M1 baseline runbook](./M1-BASELINE-RUNBOOK.md) specifies disposable tests. This is **not** approval to deploy on ORION or start custom OIDC code.
 
 ## M0 source review checkpoint, 2026-11-15
 
@@ -42,6 +42,12 @@ The [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md) do
 - Subscription ownership, cross-user caching, account deletion and cookie-authenticated CSRF require explicit tests.
 - SQLite column migration may rebuild the Users table. Migration and restore must be validated per supported database dialect.
 - Recommended next milestone **after M0 signoff** remains the isolated, **unmodified** M1 baseline. No implementation or infrastructure changes were made during review.
+
+## M0 technical closure and M1 entry
+
+- [M0 architecture decision record](./M0-DECISION-RECORD.md): M0 design/research gate satisfied for M1 entry, with selected prototype constraints and explicit unresolved test risks.
+- [M1 isolated baseline runbook](./M1-BASELINE-RUNBOOK.md): prepared, **not executed**, for upstream 1.18.33. Start only after isolation and test host verification; no production infrastructure changes.
+- **Current milestone: M1 preparation.** No baseline checks passed, no containers deployed, no OIDC code added. Do not proceed to M2 until M1 acceptance passes.
 
 ## Scope and invariants
 
