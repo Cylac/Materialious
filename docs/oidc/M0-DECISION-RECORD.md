@@ -3,7 +3,7 @@
 Decision date: 2026-11-18
 Status: **M0 source and architecture gate satisfied for proceeding to M1 preparation.**
 Implementation status: **No application code written; no runtime tests or deployments performed.**
-Reviewed release: upstream **1.18.33**, source commit \`982ac6f5c04c989fcae3521a3b619a055946753d\`.
+Reviewed release: upstream **1.18.33**, source commit `982ac6f5c04c989fcae3521a3b619a055946753d`.
 Based on [reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md), [design contract](./M0-DESIGN-CONTRACT.md), [source review](./M0-SOURCE-REVIEW.md), [security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md), [threat model](./THREAT-MODEL.md), and [test plan](./TEST-PLAN.md).
 
 ## Technical go / no-go
@@ -17,11 +17,11 @@ The early M0 feasibility question is resolved: an optional, provider-neutral, **
 ## Selected technical direction for the isolated prototype
 
 1. **Local authentication remains intact.** OIDC is opt-in and disabled by default.
-2. **Provider-neutral identity binding.** Exact, trusted (\`iss\`, \`sub\`) maps to immutable internal \`User.id\`; never join on email, display name or group names. Automatic linking of pre-existing accounts is prohibited.
+2. **Provider-neutral identity binding.** Exact, trusted (`iss`, `sub`) maps to immutable internal `User.id`; never join on email, display name or group names. Automatic linking of pre-existing accounts is prohibited.
 3. **Web first.** Full web is the initial OIDC target. Capacitor mobile/desktop and Quick Connect need independent security design and tests before claiming support.
 4. **Client-controlled encryption.** New OIDC users choose a separate unlock passphrase. The browser generates and unwraps their own random master key. The passphrase and raw master key are not sent to the Materialious server.
 5. **Recovery.** For M2, demonstrate the locked/unlocked model with disposable data and clearly disclose that forgotten unlock credentials cause data loss. Before any family-facing M4 pilot, provide and test an **offline recovery-secret envelope** or explicitly revise scope with a reviewed alternative; do not silently add server key escrow.
-6. **New OIDC-only user state.** Two-stage pending enrollment followed by atomic creation of \`User\` and unique \`OidcIdentity\`. The current non-null local credential columns require an explicit, tested schema migration. Default automatic OIDC provisioning remains off except in controlled test settings.
+6. **New OIDC-only user state.** Two-stage pending enrollment followed by atomic creation of `User` and unique `OidcIdentity`. The current non-null local credential columns require an explicit, tested schema migration. Default automatic OIDC provisioning remains off except in controlled test settings.
 7. **Revocable sessions.** OIDC uses distinct opaque, server-side session state, not upstream signed user-ID bearer tokens. Trial settings are 2-hour idle and 12-hour absolute lifetimes, subject to usability and IdP revocation review before release. Reject contradictory legacy/OIDC identities rather than selecting one silently.
 8. **Web security.** One-time state, PKCE and nonce, fixed issuer metadata, verified ID token, exact redirect, explicit CSRF protection on cookie-authenticated mutating JSON routes, secure host-only cookie, and session-bound account status checks.
 9. **Memory-only OIDC key by default.** The new OIDC unlock path does not persist the unwrapped master key to localStorage by default. Existing local accounts keep their semantics during M2; clear cached sensitive data on account switch or logout.
