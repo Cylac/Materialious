@@ -40,7 +40,7 @@ Related: [source review](./M0-SOURCE-REVIEW.md), [proposed design contract](./M0
 | T10 | IdP user suspension mistaken for immediate session revocation | No OIDC provider-side revocation integration yet | Local account-disable support, short max session lifetime, explicit statement that IdP disable alone is not instantaneous | High |
 | T11 | Group/name based admin elevation | Existing Materialious admin check is configured local username | Do not authorize admin from provider display claims; test name/claim spoofing | High |
 | T12 | Quick Connect bypass of new OIDC controls | Quick Connect moves bearer token and raw master key inside encrypted payload | Keep out of M2, disable for OIDC accounts until reviewed, separate device/session enrollment design | High |
-| T13 | Insufficient per-user personal-playlist persistence | Native YouTube mode playlist operations are no-ops or empty | Track as M4 release acceptance gap; no claim of complete family feature coverage | Medium |
+| T13 | Native personal-playlist data isolation | **Updated 1.18.33:** User-owned encrypted private playlist APIs now exist upstream | Test playlist ownership, cross-user API identifiers, encryption and account switching in M1; no custom implementation assumed | High |
 | T14 | Malicious provider discovery, SSRF or redirect | Configurable generic OIDC issuer could be attacker controlled | Server-admin configured issuer allowlist, HTTPS, fixed callback and trusted discovery endpoints; reject arbitrary dynamic issuers | High |
 | T15 | Side-channel or metadata leaks | Watch progress/time and other operational metadata are stored in plaintext | Document metadata exposure and avoid overstating E2E confidentiality | Medium |
 | T16 | Partial enrollment and concurrent subject creation | User model requires key envelope and identity link is separate | Short-lived pending context, transactional provision, exact unique index and retry/idempotency tests | High |
@@ -56,6 +56,8 @@ Related: [source review](./M0-SOURCE-REVIEW.md), [proposed design contract](./M0
 | T21 | CSRF on JSON cookie-authenticated endpoints | SvelteKit built-in origin check targets form submissions; OIDC will add cookie-authenticated JSON endpoints | Add explicit CSRF contract and adversarial test for unsafe API methods and missing/untrusted Origin | High |
 
 | T22 | Subscription FK case mismatch | Subscription reads use `userId` while association and writes use `UserId`; Sequelize SQL identifier handling varies by dialect | Verify exact schema, generated query and cross-device subscription reads for all supported database engines | Medium |
+
+| T23 | Local TOTP and OIDC credential-mode interaction | **Updated 1.18.33:** local password login can require TOTP; OIDC-only accounts and future linking have distinct authentication policies | Preserve local TOTP fields and flows in migrations; test linking only with fresh complete local auth plus fresh OIDC; avoid bypass via legacy sessions | High |
 
 Source-level observations, not proof of exploitable issues. Detailed migration and acceptance cases: [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md).
 
