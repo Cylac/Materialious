@@ -1,6 +1,6 @@
 # OIDC test strategy
 
-Status: M0 planning baseline. These tests have not been executed.
+Status: M0 technical planning completed, M1 unmodified baseline prepared. **None of these runtime tests has been executed.**
 
 ## Baseline acceptance (before custom code)
 
@@ -118,3 +118,8 @@ Detailed steps and source references: [M0 security and migration review](./M0-SE
 ## 1.18.33 baseline extension
 
 See [upstream reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). Pin unmodified stable 1.18.33 at `982ac6f5c04c989fcae3521a3b619a055946753d` for the M1 baseline and record the image digest/build provenance. Confirm native private playlists are genuinely encrypted and scoped per user. Test TOTP registration, activation, sign-in and disable; verify legacy bearer/Quick Connect behaviour with TOTP active. Characterize 1.18.27 to 1.18.33 database migration using disposable data. Do not confuse source availability with executed verification.
+
+
+## Current M1 execution reference
+
+Technical M0 architecture entry decision: [M0 decision record](./M0-DECISION-RECORD.md). Executable test order, isolation guardrails and 1.18.33 baseline: [M1 runbook](./M1-BASELINE-RUNBOOK.md). These documents are plans, not passing test reports. Do not proceed to M2 before M1 acceptance and remediation of any blocking isolation defects.
