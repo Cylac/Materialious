@@ -2,6 +2,8 @@
 
 Status: Hypothesis under review. Do not implement or deploy without completing M0.
 
+> **Upstream update, November 18, 2026:** Materialious 1.18.33 adds native private playlists, local TOTP two-factor login and new migrations. Earlier playlist-gap observations below describe 1.18.27 only. See [current reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). All OIDC schema and account-linking plans must preserve upstream TOTP and playlist tables.
+
 ## Existing backend verified in source
 
 - The full web edition uses SvelteKit with a Node.js backend and Sequelize.
@@ -93,7 +95,7 @@ Important refinements to this initial architecture hypothesis:
 - The existing database currently requires `passwordHash` and `passwordSalt` for every user. A safe OIDC-only account type needs a migration and a local-login guard. Avoid dummy passwords and implicit email linking.
 - The existing signed user-ID bearer token has no embedded expiration or independent revocation. OIDC sessions should use separately managed, revocable server-side state.
 - The client currently persists the raw decrypted master key. Consider a deliberate remember-device policy rather than assuming that an unlock passphrase is required on every return visit.
-- The Materialious YouTube backend does not currently provide native, user-owned personal-playlist CRUD. This is a separate family-release capability gap, not an OIDC protocol requirement.
+- **Historical 1.18.27 observation, now superseded:** Native personal-playlist CRUD was unavailable then. The 1.18.33 upstream source adds encrypted private playlist APIs; verify in M1.
 - Review tenant-scoping on all user-content API operations and assess existing admin-by-username checks before enabling automated provisioning.
 
 These are design and test requirements, **not** claims that an OIDC implementation exists.
