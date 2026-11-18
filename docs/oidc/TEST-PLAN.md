@@ -5,7 +5,7 @@ Status: M0 planning baseline. These tests have not been executed.
 ## Baseline acceptance (before custom code)
 
 - Two separate Materialious Full accounts can register and sign in.
-- User A history, saved playback progress, channel subscriptions and settings do not appear under user B. Inventory personal-playlist behaviour separately: the built-in YouTube backend currently has no native personal-playlist CRUD, so that requirement must **not** be marked as passing without an actual supported implementation.
+- User A history, saved playback progress, channel subscriptions, settings and **native private playlists** do not appear under user B. Verify newly introduced Materialious playlist creation, editing, ordering, deletion, cross-device synchronization and encryption on upstream **1.18.33**.
 - Changes persist across browser restarts and another device.
 - Password reset and quick connect behavior are characterized.
 - Registration disabled mode and any proxy authentication requirements are exercised.
@@ -82,7 +82,7 @@ The evidence and integration proposal are in [M0-SOURCE-REVIEW.md](./M0-SOURCE-R
 - Verify OIDC user display names, email claims and rename events cannot grant local administrative privileges.
 - Demonstrate where the browser, desktop and Android clients persist tokens and raw master keys, and test an explicit clearing policy after logout or switching accounts.
 - Verify Quick Connect device pairing cannot bypass the intended OIDC session lifecycle or key-unlock policy.
-- Treat native personal playlists as an outstanding product requirement unless independently implemented and tested; OIDC login alone cannot satisfy this requirement.
+- Native private playlists were implemented upstream in **1.18.33**. Do not mark the family requirement as passing until isolated M1 tests confirm cross-user authorization, synchronization and encryption. Public/shared playlists are not promised.
 
 ## Detailed M0 security and lifecycle acceptance cases
 
@@ -111,5 +111,10 @@ Detailed steps and source references: [M0 security and migration review](./M0-SE
 - Test deleting a user and checking for orphaned encrypted records or reused identifiers.
 - Check all mutating JSON endpoints against cross-site, missing-origin and cookie-only requests; do not assume built-in form CSRF protection covers every API endpoint.
 - Check per-user cache separation in localStorage, IndexedDB, Svelte stores, concurrent fetch results and post-logout state.
-- Rehearse OIDC-only nullable password field migration on copied SQLite, PostgreSQL and MySQL/MariaDB baselines as relevant, comparing legacy credential and master-key envelopes exactly, and restore a prior backup after a simulated migration failure.
+- Rehearse OIDC-only nullable password field migration on copied SQLite, PostgreSQL and MySQL/MariaDB baselines as relevant, comparing legacy credential and master-key envelopes exactly, preserving new TOTP and playlist associations, and restoring a prior backup after simulated failure.
 - Distinguish **unmodified upstream defects** from OIDC regressions. Document any proposed patches on reviewable feature branches, not on `main`.
+
+
+## 1.18.33 baseline extension
+
+See [upstream reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). Pin unmodified stable 1.18.33 at `982ac6f5c04c989fcae3521a3b619a055946753d` for the M1 baseline and record the image digest/build provenance. Confirm native private playlists are genuinely encrypted and scoped per user. Test TOTP registration, activation, sign-in and disable; verify legacy bearer/Quick Connect behaviour with TOTP active. Characterize 1.18.27 to 1.18.33 database migration using disposable data. Do not confuse source availability with executed verification.
