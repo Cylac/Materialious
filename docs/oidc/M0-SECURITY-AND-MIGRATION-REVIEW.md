@@ -6,6 +6,8 @@ Evidence baseline: Materialious Full application code from \`Cylac/Materialious\
 
 This is a **design-only** assessment. No live requests, dependency installs, database migrations, builds, code patches, server access or exploitation tests were performed.
 
+> **Version notice, 2026-11-18:** This review was written against 1.18.27. Current stable **1.18.33** adds native private playlists, local TOTP and extracted migrations. The old playlist capability gap below is superseded. Remaining security findings and changed endpoints are documented in [1.18.33 reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). Use the newer upstream code for implementation.
+
 ## Executive findings
 
 1. A provider-neutral OIDC **web** flow with a separately unlocked client master key remains feasible in principle.
@@ -14,7 +16,7 @@ This is a **design-only** assessment. No live requests, dependency installs, dat
 4. The server stores a client-derived login password hash which the login endpoint accepts directly. This value is an **authentication-equivalent credential** if disclosed; a database leak can therefore permit someone to authenticate to that account as far as the server is concerned, even if the attacker still cannot decrypt the user's master key without the original secret.
 5. Some subscription database reads and mutations lack an explicit \`UserId\` predicate; their global primary key needs a per-user access test. No exploitation has been demonstrated. Separately, the account deletion path needs a data-retention and cascade test.
 6. SvelteKit's documented built-in origin checks cover form submissions. Do not assume those checks alone implement the full CSRF policy for cookie-authenticated JSON \`+server\` endpoints.
-7. Current YouTube backend mode has no native personal-playlist CRUD. This is a distinct family-release capability gap.
+7. **Historical 1.18.27 finding, superseded:** native personal-playlist CRUD was missing then. Upstream 1.18.33 adds encrypted private playlists; test them in M1.
 
 ## Source-grounded security observations
 
