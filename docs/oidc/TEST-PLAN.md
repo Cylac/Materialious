@@ -1,6 +1,6 @@
 # OIDC test strategy
 
-Status: M0 technical planning completed, M1 unmodified baseline prepared. **None of these runtime tests has been executed.**
+Status: M0 planning complete; isolated M1 1.18.35 container started. **Only basic health, anonymous API and empty SQLite copy/integrity checks have been executed. User and security acceptance tests remain untested.**
 
 ## Baseline acceptance (before custom code)
 
@@ -123,3 +123,10 @@ See [upstream reassessment](./UPSTREAM-1.18.33-REASSESSMENT.md). Pin unmodified 
 ## Current M1 execution reference
 
 Technical M0 architecture entry decision: [M0 decision record](./M0-DECISION-RECORD.md). Executable test order, isolation guardrails and 1.18.33 baseline: [M1 runbook](./M1-BASELINE-RUNBOOK.md). These documents are plans, not passing test reports. Do not proceed to M2 before M1 acceptance and remediation of any blocking isolation defects.
+
+
+## M1 observed baseline error, 2026-11-19
+
+An unauthenticated `GET /api/user/subscriptions` returned HTTP **500** instead of a clean 401 on unmodified Materialious Full 1.18.35. Code review confirms that the route calls `getUser(locals.userId)` without its own missing-user check. Add an explicit expected 401 regression test once the baseline defect is triaged. The observation does **not** demonstrate unauthorized content disclosure.
+
+The baseline application responded successfully on its loopback-only health route; an empty SQLite online backup and isolated restored copy passed `integrity_check`. Cross-user subscriptions, private playlists and encrypted history have not been tested. The [M1 runbook](./M1-BASELINE-RUNBOOK.md) records the remaining gates.
