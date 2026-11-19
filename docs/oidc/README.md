@@ -1,12 +1,22 @@
 # OIDC integration roadmap
 
-Status: **M0 technical architecture gate completed 2026-11-18; M1 isolated unmodified baseline prepared, not deployed.** No OIDC implementation or production integration exists.
+Status: **M0 design complete; M1 isolated local baseline running, but acceptance NOT passed.** No OIDC implementation or production integration exists.
 
 ## Goal
 
 Introduce optional standards based OpenID Connect login to the full backend edition of Materialious, preserving individual users' history, subscriptions, playlists and settings across devices. The design should be provider neutral and usable with identity providers such as Authentik, Keycloak and other compliant implementations.
 
 This document is planning material for an independent community maintained fork, not an upstream feature commitment.
+
+## M1 isolated startup checkpoint, 2026-11-19
+
+Unmodified upstream **Materialious Full 1.18.35** has started successfully in an isolated local Docker environment, pinned to source `deb7fb133df5efa4e95c3b343677369fdf3ec9fd` and image index digest `sha256:9ad5e04634809a44aa48eb25ab828e5ebd2659870bff836c5b89257a6b3ee46c`.
+
+- Baseline service health, version and anonymous API rejection were checked, and an empty SQLite backup/restore copy passed integrity checking.
+- Anonymous subscription listing returned HTTP 500; disposition remains open.
+- **No two-user, encrypted data, playlist, login/logout or playback tests have passed.** M1 acceptance is therefore still pending.
+- This is a **local-only** test, not authorization for public ingress. Private operational settings and approved hostname are kept outside this public fork.
+- See the [M1 baseline runbook](./M1-BASELINE-RUNBOOK.md) for the current test sequence.
 
 ## Current upstream checkpoint, 2026-11-18
 
@@ -47,7 +57,7 @@ The [M0 security and migration review](./M0-SECURITY-AND-MIGRATION-REVIEW.md) do
 
 - [M0 architecture decision record](./M0-DECISION-RECORD.md): M0 design/research gate satisfied for M1 entry, with selected prototype constraints and explicit unresolved test risks.
 - [M1 isolated baseline runbook](./M1-BASELINE-RUNBOOK.md): prepared, **not executed**, for upstream 1.18.33. Start only after isolation and test host verification; no production infrastructure changes.
-- **Current milestone: M1 preparation.** No baseline checks passed, no containers deployed, no OIDC code added. Do not proceed to M2 until M1 acceptance passes.
+- **Current milestone: M1 initial execution.** Local health, anonymous-access and empty-database backup checks completed. Account isolation and functional acceptance remain pending. No OIDC code added. Do not proceed to M2 until M1 acceptance passes.
 
 ## Scope and invariants
 
