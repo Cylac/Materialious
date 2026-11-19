@@ -1,12 +1,12 @@
-# M1 isolated baseline runbook: unmodified Materialious Full 1.18.33
+# M1 isolated baseline runbook: unmodified Materialious Full 1.18.35
 
-Status: **Prepared but NOT executed**
-Prepared: 2026-11-18
+Status: **Isolated local container started, only preliminary smoke and empty-DB backup checks completed. M1 user acceptance NOT complete.**
+Prepared: 2026-11-18. Local startup checkpoint: 2026-11-19
 Related: [M0 decision record](./M0-DECISION-RECORD.md), [test plan](./TEST-PLAN.md), [1.18.33 upstream review](./UPSTREAM-1.18.33-REASSESSMENT.md).
 
 ## Goal and hard boundaries
 
-Test the **unmodified upstream** Materialious Full release 1.18.33, commit `982ac6f5c04c989fcae3521a3b619a055946753d`, with disposable local users and independent persistent test storage.
+Test the **unmodified upstream** Materialious Full release 1.18.35, commit `deb7fb133df5efa4e95c3b343677369fdf3ec9fd`, with disposable local users and independent persistent test storage.
 
 This runbook **does not authorize** a host deployment. For any test on ORION, first review running Docker resources, choose a wholly isolated location/network/ports and obtain explicit approval. Do not touch existing containers, proxy, DNS, Authentik, family databases, Cloudflare, production volumes, or the GionetHome tunnel. A separate disposable host or sandbox is preferable.
 
@@ -15,9 +15,9 @@ No external identity provider is needed for M1. The test must prove original Mat
 ## Release and artifact pinning
 
 - The upstream Full Docker build workflow is `.github/workflows/prod-full-web.yml`: it publishes `wardpearce/materialious-full:latest` and `wardpearce/materialious-full:<package-version>`.
-- Upstream source `materialious/package.json` at the reviewed SHA declares version `1.18.33`.
-- Before use, **verify** that `wardpearce/materialious-full:1.18.33` exists, is associated with the intended upstream build, and capture an immutable platform-specific digest. Publishing a version tag in workflow does not itself establish availability or provenance.
-- In a disposable test shell, inspect with `docker buildx imagetools inspect wardpearce/materialious-full:1.18.33` and record the selected digest. Never assume the digest, and do not deploy `latest`.
+- Upstream source `materialious/package.json` at the reviewed SHA declares version `1.18.35`.
+- Before use, **verify** that `wardpearce/materialious-full:1.18.35` exists, is associated with the intended upstream build, and capture an immutable platform-specific digest. Publishing a version tag in workflow does not itself establish availability or provenance.
+- In a disposable test shell, inspect with `docker buildx imagetools inspect wardpearce/materialious-full:1.18.35` and record the selected digest. Never assume the digest, and do not deploy `latest`.
 - If no trustworthy published image is available, create a reproducible isolated build from the pinned upstream source. Do not substitute our unfinished OIDC branch.
 
 ## Ready-to-customize isolated Docker Compose example
@@ -58,7 +58,7 @@ The upstream Full image and basic SQLite environment syntax are described in `do
 ### Gate 0. Isolation and provenance
 
 - [ ] Confirm test host and available capacity, and record why the planned port/volume/network cannot collide with existing services.
-- [ ] Confirm unmodified upstream 1.18.33 source SHA and immutable Docker image digest.
+- [ ] Confirm unmodified upstream 1.18.35 source SHA and immutable Docker image digest.
 - [ ] Create separate persistent disposable storage and unique random session secret. No real family users or production credentials.
 - [ ] Save an inventory of test configuration without secrets, DB engine/version, and actual test start timestamp.
 - [ ] Prepare a repeatable teardown/restore procedure restricted to the disposable Compose project and exact named volumes only. Never issue blanket Docker cleanup.
@@ -87,7 +87,7 @@ The upstream Full image and basic SQLite environment syntax are described in `do
 
 ### Gate 3. Database durability and upgrade comparison
 
-- [ ] Back up the disposable 1.18.33 DB and restore into a separately named test volume. Confirm encrypted data still unlocks on a fresh client.
+- [ ] Back up the disposable 1.18.35 DB and restore into a separately named test volume. Confirm encrypted data still unlocks on a fresh client.
 - [ ] Optionally prepare a **separate** disposable 1.18.27 baseline DB, back it up, and migrate a *copy* forward to 1.18.33.
 - [ ] Inspect new playlist and TOTP tables/columns and ensure existing password salts, encrypted master key and user data are unchanged.
 - [ ] Simulate an interrupted migration against a disposable copy, and verify the backup restores. Do not assume version downgrade is supported.
@@ -105,3 +105,19 @@ The upstream Full image and basic SQLite environment syntax are described in `do
 If there is any chance of using an existing ORION volume, network, token, hostname or reverse proxy, **stop**. Use a disposable host or review the isolation with the user before starting. Nothing in this runbook should be executed against a production service or real family identity.
 
 If the upstream image, existing local authorization, session cookies or database migration behave unexpectedly, record the exact observation and return to source review before implementing a workaround. Preserve the original working setup and keep the OIDC feature PR open and draft.
+
+## M1 preliminary local execution checkpoint, 2026-11-19
+
+The owner authorized an **isolated local** deployment as the foundation for a future private family service. An operator-controlled Docker host is now running **unmodified upstream 1.18.35**, with published OCI index digest `sha256:9ad5e04634809a44aa48eb25ab828e5ebd2659870bff836c5b89257a6b3ee46c`. The container uses a dedicated network, a loopback-only HTTP port, disposable SQLite storage, a nonroot runtime UID and a generated local secret. **No real household information, hostnames, IPs, paths or secrets are recorded in this public repository.**
+
+Executed preliminary checks:
+
+- Container `healthy`, restart count 0 after startup, configuration reported version 1.18.35 and internal authentication/require-auth enabled.
+- Anonymous `GET /api/config` returned 200, while `/api/user/me`, `/api/user/history`, `/api/user/playlists`, `/api/user/isLoggedIn` and `/api/admin/users` returned 401.
+- **Anonymous `GET /api/user/subscriptions` returned HTTP 500**, not 401. The upstream route calls `getUser(locals.userId)` without an explicit auth guard. Treat as a baseline error-handling concern, not proof of cross-user access.
+- An empty SQLite database was backed up through Node 26's SQLite backup API and restored to an isolated copy. The restored copy passed integrity check; it contained nine tables and no users. This is **not** a user-data recovery test.
+
+Not run: account creation, dual-user isolation, login/logout browser testing, Quick Connect, TOTP, playlists, encrypted data synchronization, streaming/video proxy testing, full backup recovery and schema upgrade tests. **M1 acceptance is not passed and M2 must not start.**
+
+The private infrastructure repository tracks operational configuration and publication controls. Public DNS, Access, tunnels, real family accounts and production services are unaffected. Additional public publishing changes require a separately reviewed security and rollback plan.
+
