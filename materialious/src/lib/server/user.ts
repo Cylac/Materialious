@@ -63,7 +63,8 @@ export class User {
 	async removeSubscription(id: string) {
 		await getSequelize().ChannelSubscriptionTable.destroy({
 			where: {
-				id
+				id,
+				UserId: this.id
 			}
 		});
 	}
@@ -72,7 +73,8 @@ export class User {
 		return (
 			(await getSequelize().ChannelSubscriptionTable.count({
 				where: {
-					id
+					id,
+					UserId: this.id
 				}
 			})) > 0
 		);
@@ -81,7 +83,7 @@ export class User {
 	async subscriptions(): Promise<ChannelSubscriptionModel[]> {
 		const subscriptions = await getSequelize().ChannelSubscriptionTable.findAll({
 			where: {
-				userId: this.data.id
+				UserId: this.id
 			}
 		});
 
