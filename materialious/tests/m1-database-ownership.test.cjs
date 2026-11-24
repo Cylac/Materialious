@@ -35,7 +35,7 @@ function loadActualUserModule(getSequelize) {
 async function fixture(t) {
   // In-memory SQLite with the same UserId association used by Materialious.
   // No filesystem database, live session or network is involved.
-  const sequelize = new Sequelize('sqlite::memory:', { logging: false, dialectModule: sqlite3 });
+  const sequelize = new Sequelize({ dialect: 'sqlite', storage: ':memory:', logging: false, dialectModule: sqlite3 });
   t.after(async () => sequelize.close());
   const UserTable = sequelize.define('User', {
     id: { type: DataTypes.UUID, primaryKey: true, allowNull: false },
