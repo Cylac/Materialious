@@ -10,6 +10,7 @@ const zSubscriptionCreate = z.object({
 });
 
 export async function POST({ locals, request, params }) {
+	if (!locals.userId) error(401, 'Unauthorized');
 	const subscription = zSubscriptionCreate.safeParse(await request.json());
 
 	if (!subscription.success) error(400);
@@ -25,6 +26,7 @@ export async function POST({ locals, request, params }) {
 }
 
 export async function PATCH({ locals, params }) {
+	if (!locals.userId) error(401, 'Unauthorized');
 	const user = await getUser(locals.userId);
 	await user.subscriptionRssUpdated(params.id);
 
@@ -32,6 +34,7 @@ export async function PATCH({ locals, params }) {
 }
 
 export async function DELETE({ locals, params }) {
+	if (!locals.userId) error(401, 'Unauthorized');
 	const user = await getUser(locals.userId);
 	await user.removeSubscription(params.id);
 
@@ -39,6 +42,7 @@ export async function DELETE({ locals, params }) {
 }
 
 export async function GET({ locals, params }) {
+	if (!locals.userId) error(401, 'Unauthorized');
 	const user = await getUser(locals.userId);
 
 	return Response.json({
