@@ -18,6 +18,8 @@ jobs:
           node-version: 26
       - name: Install modules
         run: npm install
+      - name: Run M1 account authorization regression tests
+        run: node --test tests/m1-account-boundaries.test.cjs
       - name: Run svelte checks
         run: npm run check
       - name: Check linting
