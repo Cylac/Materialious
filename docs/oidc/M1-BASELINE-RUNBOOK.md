@@ -121,3 +121,14 @@ Not run: account creation, dual-user isolation, login/logout browser testing, Qu
 
 The private infrastructure repository tracks operational configuration and publication controls. Public DNS, Access, tunnels, real family accounts and production services are unaffected. Additional public publishing changes require a separately reviewed security and rollback plan.
 
+## M1 security validation checkpoint, 2026-11-24
+
+An isolated, unmodified Full 1.18.35 deployment remains running for the M1 baseline. A single disposable account demonstrated registration, remote search and playback, watch history, apparent resume, and encrypted private playlist persistence across a fresh browser session. These manual outcomes **do not** satisfy full M1 acceptance, especially multi-user isolation, session logout and restored-account decryption.
+
+The source review identified missing per-user authorization checks on subscription operations, plus the logout cookie path mismatch. A controlled disposable-database ownership probe confirmed the missing account predicate at the database level, but no live cross-account HTTP exploit was attempted.
+
+A separate **draft** fork change, [M1 account boundaries PR #2](https://github.com/Cylac/Materialious/pull/2), scopes the existing subscription operations, rejects anonymous calls and aligns logout cookie deletion. **Six focused tests pass on the patched source and fail on unmodified upstream 1.18.36.** The tests are local module regression checks, not an end-to-end browser test or a successful GitHub Actions job. The independent M1 runtime is still unmodified, and draft PR #2 is neither merged nor deployed.
+
+A backup of the one-account disposable SQLite database was restored into a separate file and passed structural integrity and foreign-key checks. Actual decryption/unlock on a restored application is still untested. Private operational details and snapshots remain outside this public fork.
+
+**M1 remains blocked for multi-user expansion or M2 OIDC work** until reviewed fixes are fully validated, the legacy session policy is characterized, backup recovery is demonstrated with the encrypted client key, and account isolation tests are completed.
