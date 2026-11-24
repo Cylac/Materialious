@@ -198,3 +198,80 @@ test('logout deletes the same path used for the authentication cookie', () => {
   assert.equal(cookieDeleted[0].name, cookieSet[0].name);
   assert.equal(cookieDeleted[0].path, cookieSet[0].path);
 });
+
+function historyRouteWithRows(initialRows) {
+  const records = initialRows.map((row) => ({ ...row }));
+  const calls = [];
+  const database = {
+    UserHistoryTable: {
+      async findAll(options) {
+        calls.push({ method: 'findAll', where: options.where });
+        return records.filter((row) => row.UserId === options.where.UserId);
+      },
+      async destroy(options) {
+        calls.push({ method: 'destroy', where: options.where });
+        for (let i = records.length - 1; i >= 0; i -= 1) {
+          if (records[i].UserId === options.where.UserId) records.splice(i, 1);
+        }
+      }
+    }
+  };
+  // Build only the schema declarations needed to load the real route.
+  // Unauthorized requests must be rejected before payload parsing or DB access.
+  const schema = { max() { return this; }, optional() { return this; } };
+  const zod = {
+    object: () => schema,
+    string: () => schema,
+    number: () => schema,
+    coerce: { date: () => schema }
+  };
+  const routes = loadTypeScript('routes/api/user/history/+server.ts', {
+    '#lib/server/database': { getSequelize: () => database },
+    '@sveltejs/kit': {
+      error(status) { throw Object.assign(new Error('HTTP error'), { status }); }
+    },
+    zod,
+    sequelize: { Op: { in: Symbol.for('m1-history-in'), lt: Symbol.for('m1-history-lt') } },
+    '$app/env/private': { HISTORY_CULLING: '-1' }
+  });
+  return { routes, records, calls };
+}
+
+test('anonymous history methods return 401 without database access', async () => {
+  const { routes, records, calls } = historyRouteWithRows([
+    { id: 'a-video', UserId: 'user-a' }
+  ]);
+  const isUnauthorized = (exception) => exception.status === 401;
+
+  await assert.rejects(
+    routes.GET({ locals: {}, url: new URL('http://localhost/api/user/history') }),
+    isUnauthorized
+  );
+  await assert.rejects(
+    routes.POST({
+      locals: {},
+      request: { async json() { throw new Error('Anonymous body must not be parsed'); } }
+    }),
+    isUnauthorized
+  );
+  await assert.rejects(routes.DELETE({ locals: {} }), isUnauthorized);
+  assert.equal(calls.length, 0);
+  assert.equal(records.length, 1);
+});
+
+test('history route reads and deletes only the authenticated owner records', async () => {
+  const { routes, records, calls } = historyRouteWithRows([
+    { id: 'a-video', UserId: 'user-a' },
+    { id: 'b-video', UserId: 'user-b' }
+  ]);
+  const url = new URL('http://localhost/api/user/history');
+  const accountA = await routes.GET({ locals: { userId: 'user-a' }, url });
+  const accountB = await routes.GET({ locals: { userId: 'user-b' }, url });
+  assert.deepEqual((await accountA.json()).map((row) => row.id), ['a-video']);
+  assert.deepEqual((await accountB.json()).map((row) => row.id), ['b-video']);
+
+  await routes.DELETE({ locals: { userId: 'user-a' } });
+  assert.deepEqual(records.map((row) => row.id), ['b-video']);
+  assert.deepEqual(calls.map((call) => call.where.UserId),
+    ['user-a', 'user-b', 'user-a']);
+});

@@ -125,6 +125,8 @@ export async function GET({ locals, url }) {
 }
 
 export async function DELETE({ locals }) {
+	if (!locals.userId) throw error(401, 'Unauthorized');
+
 	await getSequelize().UserHistoryTable.destroy({
 		where: {
 			UserId: locals.userId
