@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Node CommonJS test harness loads transpiled modules with require stubs. */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
