@@ -88,6 +88,14 @@ test('real SQLite queries keep subscriptions separated by owner', async (t) => {
   assert.deepEqual(Array.from(aList, (item) => item.get('id')), ['subscription-a']);
   assert.deepEqual(Array.from(bList, (item) => item.get('id')), ['subscription-b']);
 
+  // Updating the RSS timestamp must not touch another user's subscription.
+  await actorA.subscriptionRssUpdated('subscription-b');
+  const unchanged = await ChannelSubscriptionTable.findByPk('subscription-b');
+  assert.equal(unchanged.get('lastRSSFetch').getTime(), 0);
+  await actorB.subscriptionRssUpdated('subscription-b');
+  const updated = await ChannelSubscriptionTable.findByPk('subscription-b');
+  assert.ok(updated.get('lastRSSFetch').getTime() > 0);
+
   await actorA.removeSubscription('subscription-b');
   assert.equal(await ChannelSubscriptionTable.count({ where: { id: 'subscription-b' } }), 1);
   await actorB.removeSubscription('subscription-b');
